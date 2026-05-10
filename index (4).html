@@ -1,0 +1,541 @@
+<div id="offline-banner">MODE OFFLINE - DATA TERSIMPAN LOKAL</div>
+<div id="splash-screen">
+  <div class="pulse-bg">
+  </div>
+  <div class="logo-container text-center">
+    <h1 class="text-5xl font-black tracking-tighter text-pink-600">GARDENA</h1>
+    <p class="text-[10px] font-bold text-slate-400 mt-2 tracking-widest uppercase">Puskesmas Sampanahan</p>
+    <div class="loading-wrapper">
+      <div class="progress-container">
+        <div class="progress-bar-modern">
+        </div>
+      </div>
+      <div class="loading-dots">
+        <div class="dot">
+        </div>
+        <div class="dot">
+        </div>
+        <div class="dot">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="custom-alert">
+  <div id="alert-icon" class="w-11 h-11 rounded-full flex items-center justify-center bg-slate-50 text-indigo-600 text-xl">🔔</div>
+  <div class="flex-1">
+    <p id="alert-title" class="text-[10px] font-black uppercase text-slate-400">Info Sistem</p>
+    <p id="alert-msg" class="text-[12px] font-bold text-slate-700">
+    </p>
+  </div>
+</div>
+<div id="modal-maintenance" class="hidden fixed inset-0 bg-white/95 z-[9999] flex flex-col items-center justify-center p-10 text-center">
+  <span class="text-6xl mb-6">🛠️</span>
+  <h2 class="text-2xl font-black text-slate-800 uppercase">Sistem Maintenance</h2>
+  <p class="text-sm text-slate-400 font-bold mt-2 uppercase tracking-widest">Aplikasi sedang dalam perbaikan berkala oleh Admin. Mohon tunggu beberapa saat.</p>
+  <button onclick="location.reload()" class="mt-8 px-8 py-3 bg-pink-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg">Refresh Sistem</button>
+</div>
+<div id="loading-overlay" class="hidden fixed inset-0 bg-white/90 z-[3000] flex flex-col items-center justify-center">
+  <div class="loading-wrapper">
+    <div class="progress-container">
+      <div class="progress-bar-modern">
+      </div>
+    </div>
+    <p id="loading-text" class="text-[9px] font-black uppercase text-slate-500 font-bold tracking-widest mt-4">Menyelaraskan Data...</p>
+  </div>
+</div>
+<div class="app-container">
+  <div class="scrollable-content">
+    <div id="view-login" class="view-content active">
+      <div class="pink-header anim-header p-6 pb-16 text-white text-center">
+        <div class="absolute right-4" style="top: calc(1rem + var(--sat));">
+          <button onclick="refreshData(this)" class="btn-sync">🔄</button>
+        </div>
+        <p class="text-[8px] font-bold opacity-60 uppercase mb-1">🏥 UPTD Puskesmas Sampanahan</p>
+        <h2 class="text-3xl font-black tracking-tighter">GARDENA</h2>
+        <p class="text-[9px] font-bold opacity-80 uppercase mt-1">Garda Terdepan Nakes Sampanahan</p>
+      </div>
+      <div class="px-6 -mt-8 flex-1">
+        <div class="bg-white anim-card rounded-[32px] p-8 border border-slate-100 text-center shadow-sm">
+          <div class="w-20 h-20 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">🤳</div>
+          <h3 class="font-extrabold text-slate-800 text-sm mb-2 uppercase">Selamat Datang 👋</h3>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 leading-relaxed">Sistem akan mendeteksi wajah Anda<br>secara otomatis untuk masuk.</p>
+          <select id="select-user" class="hidden w-full bg-slate-50 border p-4 rounded-xl text-xs font-bold mb-4" onchange="handleSelectChange(this.value)">
+            <option value="">-- Menu Khusus --</option>
+          </select>
+          <button id="btn-login-trigger" onclick="startFaceAuth('LOGIN')" class="btn-primary anim-btn text-xs uppercase w-full">Scan Wajah &amp; Masuk ✨</button>
+        </div>
+      </div>
+      <div class="app-footer anim-card" style="border:none; background:transparent;">
+        <span class="version-tag">VER 1.2.1</span>
+        <p class="brand-text">
+                    Adi.P Founder &amp; Head of Developer<br>
+        <span id="trigger-admin" class="text-pink-600 font-black cursor-pointer select-none" onclick="handleAdminTrigger()">BAROKAH DEV</span>
+        <br>
+        <span class="text-[7px] opacity-50">(Part of PT. Internet Sejahtera Barokah)</span>
+      </p>
+    </div>
+  </div>
+  <div id="view-profile" class="view-content">
+    <div class="top-geofencing-banner">
+      <div class="flex items-center gap-3">
+        <div id="geo-dot-main" class="geo-dot-main searching">
+        </div>
+        <div>
+          <p id="geo-text-main" class="text-[9px] font-black text-slate-800 uppercase tracking-tighter">Mendeteksi Lokasi...</p>
+          <p id="geo-dist-main" class="text-[7px] font-bold text-slate-400 uppercase">Sinkronisasi GPS</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-lg">
+        <span class="text-[7px] font-black text-slate-500">RADIUS:</span>
+        <span id="geo-radius-limit" class="text-[7px] font-black text-pink-600">100M</span>
+      </div>
+    </div>
+    <div class="pink-header p-6 pb-8 text-white shadow-2xl">
+      <div class="flex justify-between items-start mb-4">
+        <div class="flex items-center gap-4 text-left">
+          <div class="relative">
+            <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-[20px] border-2 border-white/40 flex items-center justify-center text-3xl shadow-inner overflow-hidden">
+              <span id="prof-avatar">👤</span>
+            </div>
+            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-[10px] animate-pulse">✓</div>
+          </div>
+          <div class="relative z-10 flex flex-col justify-center gap-0">
+            <div id="session-indicator-badge" class="session-badge">
+              <div class="dot-blink">
+              </div>
+              <span id="session-badge-text">Mengecek Sesi...</span>
+            </div>
+            <h2 id="prof-name" class="text-xl font-black uppercase leading-tight tracking-tight">PETUGAS</h2>
+            <p id="prof-nip" class="text-[9px] font-bold text-white/70 tracking-wider uppercase">NRPK. -</p>
+          </div>
+        </div>
+        <button onclick="openShiftModal()" class="w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl border border-white/20 flex items-center justify-center relative z-10 shadow-lg transition-all active:scale-90">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-white" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2">
+            </rect>
+            <line x1="16" y1="2" x2="16" y2="6">
+            </line>
+            <line x1="8" y1="2" x2="8" y2="6">
+            </line>
+            <line x1="3" y1="10" x2="21" y2="10">
+            </line>
+          </svg>
+        </button>
+      </div>
+      <div class="flex flex-col items-center gap-4">
+        <div class="widget-capsule">
+          <div class="flex items-center gap-2 border-r border-white/20 pr-3">
+            <button id="header-sync-btn" onclick="refreshData(this)" class="text-white hover:text-pink-200 transition-all active:scale-90">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
+                </path>
+                <path d="M3 3v5h5">
+                </path>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16">
+                </path>
+                <path d="M16 16h5v5">
+                </path>
+              </svg>
+            </button>
+            <span class="text-[8px] font-black uppercase tracking-tighter opacity-80">Sync</span>
+          </div>
+          <div class="flex items-center gap-2 px-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-white opacity-80" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10">
+              </circle>
+              <polyline points="12 6 12 12 16 14">
+              </polyline>
+            </svg>
+            <p id="clock-display" class="text-lg font-black tracking-tight leading-none">00:00</p>
+          </div>
+        </div>
+        <div class="w-full grid grid-cols-3 gap-2">
+          <div class="status-pill col-span-1">
+            <p class="text-[6px] font-black uppercase opacity-60 mb-1">Status Lokasi</p>
+            <div class="flex items-center gap-1.5" id="gps-status-container">
+              <span id="profile-gps-dot" class="w-2 h-2 bg-slate-300 rounded-full">
+              </span>
+              <p id="profile-gps-text" class="text-[8px] font-black uppercase truncate">Mendeteksi...</p>
+            </div>
+          </div>
+          <div class="status-pill col-span-1">
+            <p class="text-[6px] font-black uppercase opacity-60 mb-1">Jam Masuk</p>
+            <div id="ring-masuk" class="progress-ring">
+              <svg>
+                <circle class="ring-bg" cx="16" cy="16" r="14">
+                </circle>
+                <circle class="ring-fill" cx="16" cy="16" r="14">
+                </circle>
+              </svg>
+              <p id="home-ket-masuk" class="absolute text-[8px] font-black tracking-tighter text-white">--:--</p>
+            </div>
+          </div>
+          <div class="status-pill col-span-1">
+            <p class="text-[6px] font-black uppercase opacity-60 mb-1">Jam Pulang</p>
+            <div id="ring-pulang" class="progress-ring">
+              <svg>
+                <circle class="ring-bg" cx="16" cy="16" r="14">
+                </circle>
+                <circle class="ring-fill" cx="16" cy="16" r="14">
+                </circle>
+              </svg>
+              <p id="home-ket-pulang" class="absolute text-[8px] font-black tracking-tighter text-white">--:--</p>
+            </div>
+          </div>
+        </div>
+        <div class="w-full flex justify-between gap-2 mt-1">
+          <div class="quick-action-card">
+            <p class="text-[6px] font-black uppercase text-white/60 mb-1">Menuju Pulang</p>
+            <p id="countdown-pulang" class="text-[11px] font-black text-white tracking-tighter">Sesi Belum Mulai</p>
+          </div>
+          <div class="quick-action-card">
+            <p class="text-[6px] font-black uppercase text-white/60 mb-1">Presensi Bulan Ini</p>
+            <div class="flex items-baseline gap-1">
+              <p id="monthly-attendance-pct" class="text-[11px] font-black text-white">0%</p>
+              <span class="text-[7px] font-bold text-white/50">Hadir</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="px-6 space-y-4 mt-8 pb-10">
+      <div class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+          <span class="text-6xl">📝</span>
+        </div>
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Log Aktivitas Terakhir</h3>
+          <span class="text-[8px] font-bold bg-pink-50 text-pink-500 px-2 py-1 rounded-lg uppercase">Sistem Log</span>
+        </div>
+        <div id="daily-log-container" class="space-y-3">
+        </div>
+      </div>
+      <div class="shift-detail-card" id="shift-detail-content">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📅</span>
+            <h3 id="shift-day-title" class="text-[10px] font-black text-slate-800 uppercase tracking-widest">Jadwal Hari Ini</h3>
+          </div>
+          <span class="text-[7px] font-black bg-slate-100 text-slate-500 px-2 py-1 rounded-lg uppercase">Shift Data</span>
+        </div>
+        <div id="shift-items-container" class="space-y-1">
+          <div class="shift-item">
+            <span class="shift-label">Buka Absen Masuk</span>
+            <span id="shift-in-start" class="shift-value">--:--</span>
+          </div>
+          <div class="shift-item">
+            <span class="shift-label">Batas Terlambat</span>
+            <span id="shift-in-late" class="shift-value highlight">--:--</span>
+          </div>
+          <div class="shift-item">
+            <span class="shift-label">Sesi Absen Pulang</span>
+            <span id="shift-out-range" class="shift-value">--:-- s/d --:--</span>
+          </div>
+        </div>
+        <p id="shift-footer-note" class="text-[7px] text-slate-400 font-bold uppercase mt-4 italic">* Pastikan Anda berada dalam radius PKM sebelum menekan tombol scan.</p>
+      </div>
+      <div class="app-footer" style="border:none; padding-bottom: 40px; background:transparent;">
+        <span class="version-tag">VER 1.2.1</span>
+        <p class="brand-text">
+                        Adi.P Founder &amp; Head of Developer<br>
+        <span class="text-pink-600 font-black tracking-widest">BAROKAH DEV</span>
+      </p>
+    </div>
+  </div>
+</div>
+<div id="view-rekap" class="view-content">
+  <div class="p-8" style="padding-top: calc(2rem + var(--sat));">
+    <div class="flex justify-between items-start mb-2">
+      <div>
+        <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Riwayat Absensi</h2>
+        <p class="text-[10px] text-slate-400 font-bold uppercase mb-4">Aktivitas Saya Bulan Ini</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="refreshData(this)" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center shadow-sm border border-slate-200">🔄</button>
+        <button onclick="downloadExcel()" class="bg-emerald-500 text-white p-3 rounded-xl text-[10px] font-bold shadow-lg flex items-center gap-2">
+                            EXCEL
+                        </button>
+      </div>
+    </div>
+    <div class="space-y-2 mb-6">
+      <div class="grid grid-cols-2 gap-2">
+        <select id="filter-bulan" onchange="handleFilterChange('month')" class="bg-white border border-slate-200 p-3 rounded-xl text-[11px] font-bold text-slate-700 outline-none">
+          <option value="01">JANUARI</option>
+          <option value="02">FEBRUARI</option>
+          <option value="03">MARET</option>
+          <option value="04">APRIL</option>
+          <option value="05">MEI</option>
+          <option value="06">JUNI</option>
+          <option value="07">JULI</option>
+          <option value="08">AGUSTUS</option>
+          <option value="09">SEPTEMBER</option>
+          <option value="10">OKTOBER</option>
+          <option value="11">NOVEMBER</option>
+          <option value="12">DESEMBER</option>
+        </select>
+        <select id="filter-tahun" onchange="handleFilterChange('year')" class="bg-white border border-slate-200 p-3 rounded-xl text-[11px] font-bold text-slate-700 outline-none">
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="flex items-center bg-white border border-slate-200 p-2 rounded-xl">
+          <input type="date" id="filter-tanggal" onchange="handleFilterChange('date')" class="w-full bg-transparent text-[11px] font-bold text-slate-700 outline-none">
+        </div>
+        <select id="filter-status" onchange="renderRekap()" class="bg-white border border-slate-200 p-3 rounded-xl text-[11px] font-bold text-slate-700 outline-none">
+          <option value="SEMUA">-- STATUS --</option>
+          <option value="HADIR">HADIR</option>
+          <option value="DL">DINAS LUAR</option>
+          <option value="TERLAMBAT">TERLAMBAT</option>
+        </select>
+      </div>
+      <div class="relative">
+        <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl text-[11px] font-bold text-slate-400 uppercase text-center">Data Terfilter: <span id="rekap-owner-name" class="text-pink-600">User</span>
+      </div>
+    </div>
+  </div>
+  <div class="rekap-wrapper bg-white border border-slate-100 shadow-sm">
+    <table class="rekap-table" id="table-to-download">
+      <thead>
+        <tr>
+          <th>NAMA</th>
+          <th>TANGGAL</th>
+          <th>MASUK - PULANG</th>
+          <th>KET</th>
+        </tr>
+      </thead>
+      <tbody id="rekap-table-body">
+      </tbody>
+    </table>
+  </div>
+  <div class="app-footer" style="border:none; padding-bottom: 40px; background: transparent;">
+    <span class="version-tag">VER 1.2.1</span>
+    <p class="brand-text">Adi.P - Barokah Dev</p>
+  </div>
+</div>
+</div>
+</div>
+<button id="fab-scan-qr" onclick="handleAttendanceTrigger()" class="fab-scan hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+    </path>
+    <path d="M12 8v4l3 2">
+    </path>
+    <circle cx="12" cy="12" r="3">
+    </circle>
+  </svg>
+</button>
+<nav id="main-nav" class="dashboard-nav hidden">
+  <div class="nav-grid">
+    <button id="nav-profile" onclick="showView('profile')" class="nav-item active">
+      <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z">
+        </path>
+        <polyline points="9 22 9 12 15 12 15 22">
+        </polyline>
+      </svg>
+      <p class="text-[7px] font-black uppercase">Beranda</p>
+    </button>
+    <button id="nav-settings" onclick="location.href='setting.html'" class="nav-item hidden">
+      <span class="text-lg">⚙️</span>
+      <p class="text-[7px] font-black uppercase">Setting</p>
+    </button>
+    <button id="nav-dl" onclick="openDLModal()" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2">
+        </rect>
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16">
+        </path>
+      </svg>
+      <p class="text-[7px] font-black uppercase">Input DL</p>
+    </button>
+    <div class="w-[80px]">
+    </div>
+    <button id="nav-rekap" onclick="showView('rekap')" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10">
+        </line>
+        <line x1="12" y1="20" x2="12" y2="4">
+        </line>
+        <line x1="6" y1="20" x2="6" y2="14">
+        </line>
+      </svg>
+      <p class="text-[7px] font-black uppercase">Riwayat</p>
+    </button>
+    <button onclick="openLogoutModal()" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4">
+        </path>
+        <polyline points="16 17 21 12 16 7">
+        </polyline>
+        <line x1="21" y1="12" x2="9" y2="12">
+        </line>
+      </svg>
+      <p class="text-[7px] font-black uppercase">Keluar</p>
+    </button>
+  </div>
+</nav>
+</div>
+<div id="modal-radius-error" class="modal-overlay">
+  <div class="modal-card">
+    <div class="bg-red-500 p-6 text-white text-center">
+      <h3 class="font-black uppercase text-sm">Akses Lokasi Ditolak</h3>
+    </div>
+    <div class="p-8 text-center">
+      <div class="w-full flex justify-center mb-4">
+        <dotlottie-player src="https://lottie.host/86d6335a-4958-450f-90e6-59750b3f86e3/W6Uj4M9kK9.json" background="transparent" speed="1" style="width: 150px; height: 150px;" loop="" autoplay="">
+        </dotlottie-player>
+      </div>
+      <h4 class="text-slate-800 font-extrabold text-sm uppercase">Anda Diluar Jangkauan</h4>
+      <p id="radius-error-msg" class="text-[10px] text-slate-400 font-bold mt-2 uppercase leading-relaxed">Silakan mendekat ke area Puskesmas Sampanahan untuk melakukan absensi.</p>
+      <div id="radius-distance-box" class="mt-6 p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+        <p class="text-[8px] font-black text-slate-400 uppercase mb-1">Jarak Saat Ini</p>
+        <p id="radius-distance-val" class="text-xl font-black text-red-500">Mendeteksi...</p>
+        <p class="text-[7px] font-bold text-slate-400 mt-1">* Maksimal Radius: <span id="radius-limit-val">100</span>m</p>
+      </div>
+      <button onclick="closeRadiusModal()" class="btn-primary mt-8 text-[10px]">SAYA MENGERTI</button>
+    </div>
+  </div>
+</div>
+<div id="modal-shift-info" class="modal-overlay">
+  <div class="modal-card">
+    <div class="pink-header p-6 text-white text-center">
+      <h3 class="font-black uppercase text-sm">Informasi Jadwal</h3>
+    </div>
+    <div class="p-8 space-y-6">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-2">⏰</div>
+        <p id="modal-shift-day-text" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Memuat Jadwal...</p>
+      </div>
+      <div id="modal-shift-details-container" class="space-y-4">
+      </div>
+      <button onclick="closeShiftModal()" class="btn-primary text-xs uppercase w-full">Tutup Info</button>
+    </div>
+  </div>
+</div>
+<div id="modal-admin-login" class="modal-overlay">
+  <div class="modal-card">
+    <div class="pink-header p-6 text-white text-center">
+      <h3 class="font-black uppercase text-sm">Login Administrator</h3>
+    </div>
+    <div class="p-8 space-y-6">
+      <div class="text-center">
+        <div class="w-16 h-16 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-2">🔐</div>
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Masukkan PIN Akses</p>
+      </div>
+      <input type="password" id="admin-pin" inputmode="numeric" pattern="[0-9]*" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center text-2xl font-black tracking-[1em] outline-none focus:border-pink-500 transition-all" placeholder="••••••">
+      <button onclick="processAdminLogin()" class="btn-primary text-xs uppercase w-full">Buka Rekapitulasi 🔓</button>
+      <button onclick="closeAdminLogin()" class="w-full text-[9px] font-bold text-slate-400 uppercase tracking-widest">Batal</button>
+    </div>
+  </div>
+</div>
+<div id="modal-scan" class="modal-overlay">
+  <div class="modal-card">
+    <div class="pink-header p-6 text-white text-center">
+      <h3 class="font-black uppercase text-sm">Validasi Lokasi</h3>
+    </div>
+    <div class="p-6">
+      <div id="geo-info" style="padding:16px;">
+        <div class="flex items-center gap-3 w-full justify-center">
+          <div id="signal-bars" class="signal-container">
+            <div class="signal-bar h-2">
+            </div>
+            <div class="signal-bar h-4">
+            </div>
+            <div class="signal-bar h-6">
+            </div>
+            <div class="signal-bar h-8">
+            </div>
+          </div>
+          <p id="geo-status-text" class="text-[10px] font-black text-slate-400 uppercase">Mengecek Lokasi...</p>
+        </div>
+        <p id="distance-text" class="text-[12px] font-extrabold text-slate-800 text-center mt-2">
+        </p>
+        <div id="map-preview-img" class="map-preview hidden">
+        </div>
+      </div>
+      <button onclick="closeScanModal()" class="w-full mt-4 p-4 rounded-xl bg-slate-100 text-slate-500 font-black text-[10px] uppercase">Batal</button>
+    </div>
+  </div>
+</div>
+<div id="modal-dl" class="modal-overlay">
+  <div class="modal-card">
+    <div class="pink-header p-6 text-white text-center">
+      <h3 class="font-black uppercase text-sm">Input Dinas Luar</h3>
+    </div>
+    <div class="p-6 space-y-4">
+      <div class="text-center">
+        <span class="text-3xl">💼</span>
+        <p class="text-[9px] text-slate-400 font-black uppercase mt-2">Keterangan Tugas Luar</p>
+      </div>
+      <textarea id="dl-keterangan" class="w-full p-4 bg-slate-50 border rounded-xl text-xs font-bold focus:border-pink-500 outline-none" rows="3" placeholder="Contoh: Pendampingan Posyandu...">
+      </textarea>
+      <button id="btn-dl-submit" onclick="processDL()" class="btn-primary text-[10px] uppercase">KIRIM PRESENSI DL ✨</button>
+      <button onclick="closeDLModal()" class="w-full text-[9px] font-bold text-slate-400 uppercase">Batal</button>
+    </div>
+  </div>
+</div>
+<div id="modal-face" class="modal-overlay">
+  <div class="modal-card">
+    <div class="pink-header p-6 text-white text-center">
+      <h3 id="face-modal-title" class="font-black uppercase text-sm">Verifikasi Wajah</h3>
+    </div>
+    <div class="p-6 relative">
+      <div class="scanner-container relative">
+        <div class="face-guide" style="z-index: 20;">
+          <div id="login-oval" class="face-oval">
+          </div>
+        </div>
+        <div id="face-scanner-line" class="scanning-line">
+        </div>
+        <video id="video-preview" autoplay="" playsinline="" muted="" style="z-index: 5;">
+        </video>
+      </div>
+      <p id="face-status-text" class="text-[8px] text-center mt-4 font-bold text-slate-400 uppercase">Menyiapkan Kamera...</p>
+      <button id="btn-face-action" onclick="confirmFaceAuth()" class="btn-primary mt-4 text-[10px]" disabled="">MENUNGGU WAJAH...</button>
+      <button onclick="closeFaceModal()" class="w-full mt-4 text-[9px] font-bold text-slate-400 uppercase">Batal</button>
+    </div>
+  </div>
+</div>
+<div id="modal-register" class="modal-overlay">
+  <div class="modal-card">
+    <div class="pink-header p-6 text-white text-center">
+      <h3 class="font-black uppercase text-sm">Pendaftaran Petugas</h3>
+    </div>
+    <div class="p-6 space-y-4">
+      <input type="text" id="reg-nama" class="w-full p-4 bg-slate-50 border rounded-xl text-xs font-bold" placeholder="Nama Lengkap">
+      <input type="text" id="reg-nip" class="w-full p-4 bg-slate-50 border rounded-xl text-xs font-bold" placeholder="NRPK (Bebas Huruf &amp; Angka)">
+      <div class="scanner-container relative">
+        <div class="face-guide" style="z-index: 20;">
+          <div id="reg-oval" class="face-oval">
+          </div>
+        </div>
+        <div id="reg-scanner-line" class="scanning-line">
+        </div>
+        <video id="video-register" autoplay="" playsinline="" muted="" style="z-index: 5;">
+        </video>
+      </div>
+      <p id="reg-status-text" class="text-[8px] text-center font-bold text-slate-400 uppercase">Arahkan Wajah ke Kamera</p>
+      <button id="btn-reg-save" onclick="processRegister()" class="btn-primary text-[10px]" disabled="">SIMPAN DATA ✨</button>
+      <button onclick="closeRegister()" class="w-full text-[9px] font-bold text-slate-400">KEMBALI</button>
+    </div>
+  </div>
+</div>
+<div id="modal-logout" class="modal-overlay">
+  <div class="modal-card">
+    <div class="pink-header p-6 text-white text-center">
+      <h3 class="font-black uppercase text-sm">Konfirmasi Keluar</h3>
+    </div>
+    <div class="p-8 text-center">
+      <div class="w-20 h-20 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🚪</div>
+      <h4 class="text-slate-800 font-extrabold text-sm uppercase">Yakin ingin keluar?</h4>
+      <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase leading-relaxed">Anda perlu melakukan verifikasi wajah kembali saat masuk sistem.</p>
+      <div class="grid grid-cols-2 gap-3 mt-8">
+        <button onclick="logout()" class="btn-primary text-[10px]">YA, KELUAR</button>
+        <button onclick="closeLogoutModal()" class="w-full bg-slate-100 text-slate-500 py-4 rounded-xl font-black text-[10px] uppercase">BATAL</button>
+      </div>
+    </div>
+  </div>
+</div>
